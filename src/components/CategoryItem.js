@@ -17,14 +17,16 @@ export default function CategoryItem({
           styles.shadowProps,
           index === 0 ? { marginLeft: 25 } : { marginLeft: 15 },
           active
-            ? { backgroundColor: "rgb(241,187,87 )" }
+            ? { backgroundColor: "rgb(0,0,0 )" }
             : { backgroundColor: "white" },
         ]}
       >
         <View style={styles.imageContainer}>
           <Image source={imageUrl} style={styles.image} />
         </View>
-        <Text style={styles.header}>{name}</Text>
+        <Text style={[styles.header, active && { color: "white" }]}>
+          {name}
+        </Text>
       </View>
     </TouchableOpacity>
   );

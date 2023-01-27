@@ -12,7 +12,7 @@ export default function Header() {
 
 const styles = StyleSheet.create({
   header: {
-    marginTop: 100,
+    marginTop: 40,
     marginHorizontal: 25,
   },
   leading: {

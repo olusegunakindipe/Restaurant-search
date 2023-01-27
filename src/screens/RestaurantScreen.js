@@ -1,34 +1,35 @@
 import {
+  ActivityIndicator,
+  FlatList,
+  Image,
   StyleSheet,
   Text,
   View,
-  ActivityIndicator,
-  FlatList,
+  Dimensions,
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import yelp from "../api/yelp";
-import RestaurantItem from "./RestaurantItem";
 
-export const Restaurants = ({ term }) => {
+export default function RestaurantScreen({ navigation }) {
+  const id = navigation.getParam("id");
+  const dimensions = Dimensions.get("window");
+  const imageWidth = dimensions.width;
+  const imageHeight = Math.round(dimensions.width * 9) / 10;
+
+  console.log("dimension", dimensions);
   const [result, setResult] = useState({
     data: null,
     loading: false,
     error: null,
   });
   useEffect(() => {
-    const searchRestaurants = async (term) => {
+    const searchRestaurants = async (id) => {
       setResult({ data: null, loading: true, error: null });
 
       try {
-        const response = await yelp.get("/search", {
-          params: {
-            limit: 15,
-            term: `${term}`,
-            location: "Toronto",
-          },
-        });
+        const response = await yelp.get(`/${id}`);
         setResult({
-          data: response.data.businesses,
+          data: response.data,
           loading: false,
           error: null,
         });
@@ -40,10 +41,9 @@ export const Restaurants = ({ term }) => {
         });
       }
     };
-    searchRestaurants(term);
-  }, [term]);
-  {
-  }
+    searchRestaurants(id);
+  }, [id]);
+
   if (result.loading)
     return <ActivityIndicator size="large" marginVertical={100} />;
   if (result.error)
@@ -52,29 +52,27 @@ export const Restaurants = ({ term }) => {
         <Text style={styles.header}>{result.error}</Text>
       </View>
     );
+  console.log("check1", result.data?.photos);
   return (
     <View style={styles.container}>
-      <Text style={styles.header}>Top Restaurants</Text>
-      <FlatList
-        data={result.data}
-        keyExtractor={(res) => res.id}
-        renderItem={({ item }) => <RestaurantItem restaurant={item} />}
-        showsVerticalScrollIndicator={false}
-      />
+      {result.data && (
+        <FlatList
+          data={result?.data?.photos}
+          keyExtractor={(photo) => photo}
+          renderItem={({ item }) => (
+            <Image
+              source={{ uri: item }}
+              style={{ height: imageHeight, width: imageWidth }}
+            />
+          )}
+        />
+      )}
     </View>
   );
-};
+}
 
 const styles = StyleSheet.create({
   container: {
-    marginHorizontal: 25,
-    marginVertical: 15,
-  },
-  header: {
-    fontWeight: "bold",
-    paddingBottom: 10,
-    fontSize: 20,
+    flex: 1,
   },
 });
-
-export default Restaurants;

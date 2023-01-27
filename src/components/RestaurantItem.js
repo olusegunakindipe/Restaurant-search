@@ -1,25 +1,38 @@
-import { Image, StyleSheet, Text, View } from "react-native";
+import {
+  ActivityIndicator,
+  Image,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import React from "react";
 import { shadowProps } from "../common/styles";
+import { withNavigation } from "react-navigation";
 
-export default function RestaurantItem({ restaurant }) {
+const RestaurantItem = ({ restaurant, navigation }) => {
+  const handleNavigation = (id) => {
+    navigation.navigate("Restaurant", { id });
+  };
   return (
-    <View style={[styles.container, styles.shadowProps]}>
-      <Image source={{ uri: restaurant.image_url }} style={styles.image} />
-      <View style={styles.info}>
-        <Text style={styles.header}>{restaurant.name}</Text>
-        <View style={styles.infos}>
-          <Text style={styles.rating}>{restaurant.rating}</Text>
-          <Text style={styles.price}>{restaurant.price}</Text>
+    <TouchableOpacity onPress={() => handleNavigation(restaurant.id)}>
+      <View style={[styles.container, styles.shadowProps]}>
+        <Image source={{ uri: restaurant.image_url }} style={styles.image} />
+        <View style={styles.info}>
+          <Text style={styles.header}>{restaurant.name}</Text>
+          <View style={styles.infos}>
+            <Text style={styles.rating}>{restaurant.rating}</Text>
+            <Text style={styles.price}>{restaurant.price}</Text>
+          </View>
         </View>
       </View>
-    </View>
+    </TouchableOpacity>
   );
-}
+};
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: "rgb(241,187,87 )",
+    backgroundColor: "rgb(0,0,0)",
     height: 100,
     flexDirection: "row",
     borderRadius: 50,
@@ -42,10 +55,13 @@ const styles = StyleSheet.create({
     fontSize: 25,
     fontWeight: "bold",
     marginBottom: 10,
+    color: "white",
   },
   infos: {
     flexDirection: "row",
   },
-  rating: { marginRight: 15, fontSize: 20 },
+  rating: { marginRight: 15, fontSize: 20, color: "white" },
   price: { color: "gold", fontSize: 20 },
 });
+
+export default withNavigation(RestaurantItem);
